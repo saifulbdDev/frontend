@@ -49,20 +49,21 @@ export default {
     };
   },
   computed: {
-    ...mapState(["adminlayout/drawer"]),
-    DRAWER_STATE: {
-      get() {
-        return this.drawer;
-      },
-      set(newValue) {
-        if (newValue === this.drawer) return;
-        this.TOGGLE_DRAWER();
-      },
+    
+      ...mapState('adminlayout',['drawer']),
+      DRAWER_STATE: {
+        get() {
+          return this.drawer
+        },
+        set(newValue) {
+          if (newValue === this.drawer) return;
+          this.TOGGLE_DRAWER();
+        }
+      }
     },
-  },
-  methods: {
-    ...mapActions(["adminlayout/TOGGLE_DRAWER"]),
-  },
+    methods: {
+      ...mapActions('adminlayout',['TOGGLE_DRAWER' ]),
+    }
 };
 </script>
 

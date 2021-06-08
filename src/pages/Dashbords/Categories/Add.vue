@@ -4,22 +4,28 @@
     <v-row>
       <v-col md="6" cols="12">
         <v-card class="pa-2">
-          <v-text-field v-model="title" height="40" :rules="nameRules" label="Title" required></v-text-field>
+          <v-text-field
+            v-model="title"
+            height="40"
+            :rules="nameRules"
+            label="Title"
+            required
+          ></v-text-field>
           <v-select
-            v-model="select"
+           v-model="parent_id"
             :items="items"
-            :rules="[v => !!v || 'Item is required']"
+            :rules="[(v) => !!v || 'Item is required']"
             label="Category"
             required
           ></v-select>
           <v-select
             v-model="select"
             :items="items"
-            :rules="[v => !!v || 'Item is required']"
+            :rules="[(v) => !!v || 'Item is required']"
             label="Category"
             required
           ></v-select>
-          <v-textarea class="desc" label="Description"></v-textarea>
+          <v-textarea class="desc"  v-model="description" label="Description"></v-textarea>
         </v-card>
       </v-col>
       <v-col md="6" cols="12">
@@ -44,12 +50,10 @@
 export default {
   data: () => ({
     valid: true,
-    name: "",
-    nameRules: [
-      (v) => !!v || "Name is required",
-      (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
-    ],
-    email: "",
+    title: "",
+    parent_id: "",
+    description: "",
+    featured: 0,
     emailRules: [
       (v) => !!v || "E-mail is required",
       (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",

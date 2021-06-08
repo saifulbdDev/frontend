@@ -1,18 +1,26 @@
-export const state = {
-  drawer: true,
-};
-export const mutations = {
+let state = {
+  drawer: true
+}
+let mutations = {
   toggleDrawer(state) {
     state.drawer = !state.drawer;
-  },
-};
-export const actions = {
+  }
+}
+let actions = {
   TOGGLE_DRAWER({ commit }) {
-    commit("toggleDrawer");
-  },
-};
-export const getters = {
+    commit('toggleDrawer');
+  }
+}
+let getters = {
   DRAWER_STATE(state) {
     return state.drawer;
-  },
-};
+  }
+}
+
+export default {
+  namespaced: true,  
+  state,
+  getters,
+  actions, 
+  mutations
+}
