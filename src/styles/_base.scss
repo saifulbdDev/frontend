@@ -1,4 +1,3 @@
-
 .v-application {
   .page-title {
     font-size: 2.4rem;
@@ -6,8 +5,8 @@
     margin-bottom: 0;
   }
   .v-card {
-    box-shadow: $card-shadow!important;
-    .v-card__title p{
+    box-shadow: $card-shadow !important;
+    .v-card__title p {
       color: $card-title-color;
       line-height: 1.33;
       margin: 0;
@@ -15,23 +14,23 @@
       font-weight: 400;
     }
     .card-dark-grey {
-      color: $title-grey!important;
+      color: $title-grey !important;
     }
     .card-light-grey {
-      color: $text-color!important;
+      color: $text-color !important;
     }
   }
   .v-navigation-drawer {
     .v-navigation-drawer__content {
       .v-list {
         .v-list-item--active {
-          background-color: #F3F5FF;
+          background-color: #f3f5ff;
           &:before {
             opacity: 0;
           }
         }
         .v-list-item:hover {
-          background-color: #F3F5FF;
+          background-color: #f3f5ff;
           &:before {
             opacity: 0;
           }
@@ -87,30 +86,29 @@
   display: none;
 }
 
-
 .toasted-container {
   .toasted {
-    height: 50px!important;
+    height: 50px !important;
     box-shadow: none;
 
     &.default {
-      background: $primary!important;
+      background: $primary !important;
     }
 
     &.error {
-      background: $error!important;
+      background: $error !important;
     }
 
     &.success {
-      background: $success!important;
+      background: $success !important;
     }
 
     &.info {
-      background-color: $primary!important;
+      background-color: $primary !important;
     }
 
     &.warning {
-      background: $warning!important;
+      background: $warning !important;
     }
 
     .action {
@@ -119,4 +117,6 @@
   }
 }
 
-
+#input-70 {
+  height: 178px !important;
+}

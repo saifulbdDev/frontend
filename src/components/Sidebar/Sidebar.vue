@@ -119,7 +119,7 @@ import menus from './manu'
       }
     },
     computed: {
-      ...mapState(['drawer']),
+      ...mapState(['adminlayout/drawer']),
       DRAWER_STATE: {
         get() {
           return this.drawer
@@ -131,7 +131,7 @@ import menus from './manu'
       }
     },
     methods: {
-      ...mapActions([ 'TOGGLE_DRAWER' ]),
+      ...mapActions([ 'adminlayout/TOGGLE_DRAWER' ]),
     }
   }
 </script>

@@ -117,7 +117,7 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
-import config from "../../config";
+import config from "@/config";
 import Search from "@/components/Search/Search";
 
 export default {
@@ -204,4 +204,4 @@ export default {
 };
 </script>
 
-<style src="./Header.scss" lang="scss"></style>
+<style src="./Header.scss" lang="scss" scoped></style>
