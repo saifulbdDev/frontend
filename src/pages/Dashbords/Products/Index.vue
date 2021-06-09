@@ -2,13 +2,30 @@
   <v-container fluid>
     <div class="tables-basic">
       <v-card class="mb-1 mt-3">
-        <v-data-table :headers="headers" :items="products" sort-by="calories" class="elevation-1">
+        <v-data-table
+          :headers="headers"
+          :items="products"
+          sort-by="calories"
+          class="elevation-1"
+        >
           <template v-slot:top>
             <v-toolbar flat>
               <v-toolbar-title>Products</v-toolbar-title>
-              <v-divider class="mx-4" inset vertical></v-divider>
-              <v-spacer></v-spacer>
-              <v-btn color="primary" dark class="mb-2" to="/dashboard/products-create">New Products</v-btn>
+              <v-divider class="mx-4" inset vertical> </v-divider>
+              <v-spacer>
+                <v-col md="6" class="mx-auto"  v-if="message == 'Deleted successfully'">
+                  <v-alert type="success">
+                  {{message}}
+                  </v-alert>
+                </v-col>
+              </v-spacer>
+              <v-btn
+                color="primary"
+                dark
+                class="mb-2"
+                to="/dashboard/products-create"
+                >New Products</v-btn
+              >
             </v-toolbar>
           </template>
           <template v-slot:body="{ items }">
@@ -37,12 +54,14 @@
                     small
                     class="mr-2"
                     link
-                    :to="'/dashboard/product-update/'+item.id"
+                    :to="'/dashboard/product-update/' + item.id"
                   >
                     <v-icon small>mdi-pencil</v-icon>
                   </v-btn>
                   <v-btn color="error" small class="mr-2">
-                    <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+                    <v-icon small @click="removeProduct(item.id)"
+                      >mdi-delete</v-icon
+                    >
                   </v-btn>
                 </td>
               </tr>
@@ -64,9 +83,7 @@ export default {
   name: "Tables",
   data() {
     return {
-      dialog: false,
-      dialogDelete: false,
-
+      message:{},
       headers: [
         {
           text: "Title",
@@ -83,39 +100,10 @@ export default {
 
         { text: "Actions", value: "actions", sortable: false },
       ],
-      desserts: [],
-      editedIndex: -1,
-      editedItem: {
-        name: "",
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0,
-      },
-      defaultItem: {
-        name: "",
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0,
-      },
     };
   },
   computed: {
     ...mapState("product", ["products"]),
-
-    formTitle() {
-      return this.editedIndex === -1 ? "New Item" : "Edit Item";
-    },
-  },
-
-  watch: {
-    dialog(val) {
-      val || this.close();
-    },
-    dialogDelete(val) {
-      val || this.closeDelete();
-    },
   },
 
   created() {
@@ -124,17 +112,19 @@ export default {
 
   methods: {
     ...mapActions("product", ["Data"]),
-    deleteItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialogDelete = true;
-    },
+    
 
-    deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1);
-      this.closeDelete();
+    removeProduct(id) {
+      if (confirm("Are you sure?")) {
+        this.$store
+          .dispatch("product/Delete", id)
+          .then((res) => {
+           this.message = res.data.message
+             this.Data();
+          })
+          .catch(() => {});
+      }
     },
   },
 };
 </script>
-

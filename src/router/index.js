@@ -3,6 +3,7 @@ import Router from "vue-router";
 
 import Layout from "@/components/Layout/Layout";
 import Login from "@/pages/Login";
+import Home from "@/pages/Frontends/Home";
 import DashboardLayout from "@/components/Dashboard/Layout/Layout";
 import SingleProduct from "@/pages/SingleProduct";
 import DashbdProduct from "@/pages/Dashbords/Products/Index.vue";
@@ -20,20 +21,25 @@ Vue.use(Router);
 let router = new Router({
   mode: "history",
   routes: [
-    {
-      path: "/",
-      redirect: "home",
-    },
+   
     {
       path: "/login",
       name: "Login",
       component: Login,
     },
     {
-      path: "/home",
+      path: "/",
+      redirect: "home",
 
       component: Layout,
       children: [
+         
+        {
+          meta: { title: "Home" },
+          path: "/home",
+
+          component: Home,
+        },
         {
           meta: { title: "SingleProduct" },
           path: "/product/:name",

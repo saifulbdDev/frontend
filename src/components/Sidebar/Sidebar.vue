@@ -94,7 +94,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions("layout", ["/TOGGLE_DRAWER"]),
+    ...mapActions("layout", ["TOGGLE_DRAWER"]),
   },
 };
 </script>

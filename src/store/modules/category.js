@@ -59,6 +59,20 @@ let actions = {
         });
     });
   },
+  Delete({ commit }, id) {
+    return new Promise((resolve, reject) => {
+      console.log(id);
+      axios
+        .delete(Config.BASE_URL + "/api/category/" + id)
+        .then((result) => {
+          resolve(result);
+          commit("SHOW", result.data.category);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  },
 
   Update({ commit }, data) {
     return new Promise((resolve, reject) => {
