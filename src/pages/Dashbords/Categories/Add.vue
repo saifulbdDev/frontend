@@ -1,31 +1,30 @@
+
 <template>
   <v-form ref="form" v-model="valid" lazy-validation class="mt-5">
     <h2>Add New Category</h2>
     <v-row>
       <v-col md="6" cols="12">
         <v-card class="pa-2">
-          <v-text-field
-            v-model="title"
-            height="40"
-            :rules="nameRules"
-            label="Title"
-            required
-          ></v-text-field>
+          <v-text-field v-model="title" height="40" label="Title" required></v-text-field>
           <v-select
-           v-model="parent_id"
-            :items="items"
+            v-model="parent_id"
+            :items="categories"
+            item-value="id"
+            item-text="title"
             :rules="[(v) => !!v || 'Item is required']"
-            label="Category"
+            label="Parent Category"
             required
           ></v-select>
           <v-select
-            v-model="select"
-            :items="items"
+            v-model="featured"
+            :items="is_Featureds"
+            item-text="text"
+            item-value="value"
             :rules="[(v) => !!v || 'Item is required']"
-            label="Category"
+            label="Is Featured"
             required
           ></v-select>
-          <v-textarea class="desc"  v-model="description" label="Description"></v-textarea>
+          <v-textarea class="desc" v-model="description" label="Description"></v-textarea>
         </v-card>
       </v-col>
       <v-col md="6" cols="12">
@@ -35,18 +34,52 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn color="white" text>Add new Feature</v-btn>
+            <v-btn color="white" text @click="addNewFeature">Add new Feature</v-btn>
           </v-toolbar>
+          <v-card-text>
+            <v-row v-for="featured_items in featured_lists" :key="featured_items.id">
+              <v-col md="5">
+                <v-text-field
+                  v-model="featured_items.field_title"
+                  height="40"
+                  label="Feature title"
+                  required
+                ></v-text-field>
+              </v-col>
+              <v-col md="5">
+                <v-select
+                  v-model="featured_items.field_type"
+                  :items="text_colors"
+                  item-text="text"
+                  item-value="value"
+                  :rules="[(v) => !!v || 'Item is required']"
+                  required
+                ></v-select>
+              </v-col>
+              <v-col md="2">
+                <v-btn @click="removeFeature(featured_items.id)" small color="primary">
+                  <v-icon dark>mdi-minus</v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>
 
-    <v-btn color="primary" class="mr-4 mt-4" @click="reset">Submit</v-btn>
+    <v-btn
+      color="primary"
+      class="mr-4 mt-4"
+      @click="save"
+      :loading="loading"
+      :disabled="loading"
+    >Submit</v-btn>
   </v-form>
 
   <!-- </v-card> -->
 </template>
 <script>
+import { mapActions, mapState } from "vuex";
 export default {
   data: () => ({
     valid: true,
@@ -54,24 +87,70 @@ export default {
     parent_id: "",
     description: "",
     featured: 0,
+    is_Featureds: [
+      { value: 0, text: "No" },
+      { value: 1, text: "Yes" },
+    ],
+    text_colors: [
+      { value: 2, text: "color" },
+      { value: 1, text: "text" },
+    ],
     emailRules: [
       (v) => !!v || "E-mail is required",
       (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
     ],
     select: null,
-    items: ["Item 1", "Item 2", "Item 3", "Item 4"],
+    loader: null,
+    loading: false,
+    featured_lists: [],
     checkbox: false,
+    formatcategories: [],
   }),
-
+  created() {
+    this.Data();
+  },
+  computed: {
+    ...mapState("category", ["categories"]),
+  },
   methods: {
-    validate() {
-      this.$refs.form.validate();
+    ...mapActions("category", ["Data"]),
+    addNewFeature() {
+      let obj = {
+        id: Math.floor(Math.random() * 1000),
+        field_title: "",
+        field_type: 1,
+        category_id: "",
+      };
+      this.featured_lists.push(obj);
+    },
+    removeFeature(id) {
+      this.featured_lists = [
+        ...this.featured_lists.filter((item) => item.id !== id),
+      ];
+    },
+
+    save() {
+      this.loading = true;
+      let data = {
+        title: this.title,
+        parent_id: this.parent_id,
+        description: this.description,
+        featured: this.featured,
+        features: this.featured_lists,
+      };
+      this.$store
+        .dispatch("category/Created", data)
+        .then(() => {
+          this.loading = false;
+
+          this.$router.push("/dashboard/categories");
+        })
+        .catch(() => {
+          this.loading = false;
+        });
     },
     reset() {
       this.$refs.form.reset();
-    },
-    resetValidation() {
-      this.$refs.form.resetValidation();
     },
   },
 };

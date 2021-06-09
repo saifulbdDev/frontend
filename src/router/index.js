@@ -17,7 +17,7 @@ import BrandUpdate from "@/pages/Dashbords/Brands/Update.vue";
 
 Vue.use(Router);
 
-export default new Router({
+let router = new Router({
   mode: "history",
   routes: [
     {
@@ -25,19 +25,19 @@ export default new Router({
       redirect: "home",
     },
     {
-      path: "/login",  
-      name: "Login",   
-      component: Login, 
+      path: "/login",
+      name: "Login",
+      component: Login,
     },
     {
       path: "/home",
-    
+
       component: Layout,
       children: [
         {
           meta: { title: "SingleProduct" },
           path: "/product/:name",
-        
+
           component: SingleProduct,
         },
       ],
@@ -46,60 +46,68 @@ export default new Router({
       path: "/dashboard",
       name: "Dashboard",
       component: DashboardLayout,
+      meta: {
+        requiresAuth: true,
+        is_admin: true,
+      },
       redirect: "/dashboard/products",
       children: [
         {
-          meta: { title: "Product" },
+          meta: { title: "Product", requiresAuth: true, is_admin: true },
           path: "/dashboard/products",
-        
+
           component: DashbdProduct,
         },
         {
-          meta: { title: "Product Add" },
-          path: "/dashboard/product-add",
-        
+          meta: { title: "Product Add", requiresAuth: true, is_admin: true },
+          path: "/dashboard/products-create",
+
           component: DashbdProductAdd,
         },
         {
-          meta: { title: "Product Update" },
-          path: "/dashboard/product-update:/id",
-        
+          meta: { title: "Product Update", requiresAuth: true, is_admin: true },
+          path: "/dashboard/product-update/:id",
+
           component: DashbdProductUpdate,
         },
         {
-          meta: { title: "Categories" },
+          meta: { title: "Categories", requiresAuth: true, is_admin: true },
           path: "/dashboard/Categories",
-        
+
           component: Categories,
         },
         {
-          meta: { title: "Category Add" },
+          meta: { title: "Category Add", requiresAuth: true, is_admin: true },
           path: "/dashboard/category-create",
-        
+
           component: CategoryAdd,
         },
         {
-          meta: { title: "Category Update" },
-          path: "/dashboard/category-update:/id",
-        
+          meta: {
+            title: "Category Update",
+            requiresAuth: true,
+            is_admin: true,
+          },
+          path: "/dashboard/category-update/:id",
+
           component: CategoryUpdate,
         },
         {
-          meta: { title: "Brands" },
+          meta: { title: "Brands", requiresAuth: true, is_admin: true },
           path: "/dashboard/brands",
-        
+
           component: Brands,
         },
         {
-          meta: { title: "Brand Add" },
+          meta: { title: "Brand Add", requiresAuth: true, is_admin: true },
           path: "/dashboard/brand-create",
-        
+
           component: BrandAdd,
         },
         {
-          meta: { title: "Brand Update" },
+          meta: { title: "Brand Update", requiresAuth: true, is_admin: true },
           path: "/dashboard/brand-update:/id",
-        
+
           component: BrandUpdate,
         },
       ],
@@ -112,3 +120,35 @@ export default new Router({
     },
   ],
 });
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (localStorage.getItem("auth_token") == null) {
+      next({
+        path: "/login",
+        params: { nextUrl: to.fullPath },
+      });
+    } else {
+      let user = JSON.parse(localStorage.getItem("user_data"));
+      if (to.matched.some((record) => record.meta.is_admin)) {
+        if (user.is_super_admin == 1) {
+          next();
+        } else {
+          next({ path: "/" });
+        }
+      } else {
+        next();
+      }
+    }
+  } else if (to.matched.some((record) => record.meta.guest)) {
+    if (localStorage.getItem("auth_token") == null) {
+      next();
+    } else {
+      next({ path: "/" });
+    }
+  } else {
+    next();
+  }
+});
+
+export default router;

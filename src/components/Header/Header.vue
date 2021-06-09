@@ -187,7 +187,7 @@ export default {
     messageBadge: true,
   }),
   computed: {
-    ...mapState(["adminlayout/drawer"]),
+    ...mapState("layout", ["drawer"]),
     DRAWER_STATE: {
       get() {
         return this.drawer;
@@ -195,7 +195,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["adminlayout/TOGGLE_DRAWER"]),
+    ...mapActions("layout", ["TOGGLE_DRAWER"]),
     logOut: function () {
       window.localStorage.setItem("authenticated", false);
       this.$router.push("/login");

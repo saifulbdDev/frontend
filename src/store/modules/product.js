@@ -1,32 +1,31 @@
 import axios from "axios";
+import Config from "@/config.json";
 let state = {
-  
-  category: [],
-  
+  products: [],
+  product: [],
 };
 let mutations = {
-
-   CATEGORY_DATA(state, category) {
-    state.category = category;
+  PRODUCT_DATA(state, products) {
+    state.products = products;
   },
   // eslint-disable-next-line no-unused-vars
-   CREATED(state, ) {
-    
+  SHOW(state, product) {
+    state.product = product;
   },
   // eslint-disable-next-line no-unused-vars
-   CATEGORY(state, ) {
-    
-  },
-  
+  CREATED(state) {},
+  // eslint-disable-next-line no-unused-vars
+  UPDATE(state) {},
 };
 let actions = {
   Data({ commit }) {
     return new Promise((resolve, reject) => {
       axios
-        .get("http://localhost:3000/640/posts")
+        .get(Config.BASE_URL + "/api/product")
         .then((result) => {
+          console.log(result.data.products.data);
           resolve(result);
-          commit("CATEGORY_DATA", result.data);
+          commit("PRODUCT_DATA", result.data.products.data);
         })
         .catch((error) => {
           reject(error);
@@ -36,10 +35,24 @@ let actions = {
   Created({ commit }, data) {
     return new Promise((resolve, reject) => {
       axios
-        .post("http://localhost:3000/640/posts", data)
+        .post(Config.BASE_URL + "/api/product", data)
         .then((result) => {
           resolve(result);
-          commit("POST_CREATED",);
+          commit("CREATED");
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  },
+  Show({ commit }, id) {
+    return new Promise((resolve, reject) => {
+      console.log(id);
+      axios
+        .get(Config.BASE_URL + "/api/product/" + id)
+        .then((result) => {
+          resolve(result);
+          commit("SHOW", result.data.product);
         })
         .catch((error) => {
           reject(error);
@@ -47,13 +60,18 @@ let actions = {
     });
   },
 
- Update({ commit }, data) {
+  Update({ commit }, data) {
+    data.data.append("_method", "put");
     return new Promise((resolve, reject) => {
       axios
-        .post("http://localhost:3000/category", data)
+        .post(`${Config.BASE_URL}/api/product/${data.id}`, data.data, {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        })
         .then((result) => {
           resolve(result);
-          commit("POST_CATEGORY",);
+          commit("UPDATE");
         })
         .catch((error) => {
           reject(error);
@@ -65,8 +83,8 @@ let getters = {
   posts(state) {
     return state.posts;
   },
-  category(state) {
-    return state.category;
+  categories(state) {
+    return state.categories;
   },
 };
 

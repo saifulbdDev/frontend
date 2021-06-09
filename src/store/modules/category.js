@@ -1,32 +1,31 @@
 import axios from "axios";
+import Config from "@/config.json";
 let state = {
-  
+  categories: [],
   category: [],
-  
 };
 let mutations = {
-
-   CATEGORY_DATA(state, category) {
+  CATEGORY_DATA(state, categories) {
+    state.categories = categories;
+  },
+  // eslint-disable-next-line no-unused-vars
+  SHOW(state, category) {
     state.category = category;
   },
   // eslint-disable-next-line no-unused-vars
-   CREATED(state, ) {
-    
-  },
+  CREATED(state) {},
   // eslint-disable-next-line no-unused-vars
-   CATEGORY(state, ) {
-    
-  },
-  
+  UPDATE(state) {},
 };
 let actions = {
   Data({ commit }) {
     return new Promise((resolve, reject) => {
       axios
-        .get("http://localhost:3000/640/posts")
+        .get(Config.BASE_URL + "/api/category")
         .then((result) => {
+          console.log(result.data.categories.data);
           resolve(result);
-          commit("CATEGORY_DATA", result.data);
+          commit("CATEGORY_DATA", result.data.categories.data);
         })
         .catch((error) => {
           reject(error);
@@ -36,10 +35,24 @@ let actions = {
   Created({ commit }, data) {
     return new Promise((resolve, reject) => {
       axios
-        .post("http://localhost:3000/640/posts", data)
+        .post(Config.BASE_URL + "/api/category", data)
         .then((result) => {
           resolve(result);
-          commit("POST_CREATED",);
+          commit("CREATED");
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  },
+  Show({ commit }, id) {
+    return new Promise((resolve, reject) => {
+      console.log(id);
+      axios
+        .get(Config.BASE_URL + "/api/category/" + id)
+        .then((result) => {
+          resolve(result);
+          commit("SHOW", result.data.category);
         })
         .catch((error) => {
           reject(error);
@@ -47,13 +60,13 @@ let actions = {
     });
   },
 
- Update({ commit }, data) {
+  Update({ commit }, data) {
     return new Promise((resolve, reject) => {
       axios
-        .post("http://localhost:3000/category", data)
+        .put(`${Config.BASE_URL}/api/category/${data.id}`, data.data)
         .then((result) => {
           resolve(result);
-          commit("POST_CATEGORY",);
+          commit("UPDATE");
         })
         .catch((error) => {
           reject(error);
@@ -65,8 +78,8 @@ let getters = {
   posts(state) {
     return state.posts;
   },
-  category(state) {
-    return state.category;
+  categories(state) {
+    return state.categories;
   },
 };
 
