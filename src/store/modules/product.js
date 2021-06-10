@@ -2,6 +2,7 @@ import axios from "axios";
 import Config from "@/config.json";
 let state = {
   products: [],
+  product:{},
   product_by_category: [],
 };
 let mutations = {

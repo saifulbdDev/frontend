@@ -17,7 +17,7 @@ import Cart from "@/components/Cart/Cart";
 import Footer from "@/components/Footer/Footer";
 import "./Layout.scss";
 import Config from "@/config.json";
-import { mapState,  } from "vuex";
+import { mapActions,  mapState,  } from "vuex";
 export default {
   name: "Layout",
   components: { Footer, Header, Sidebar, Cart },
@@ -30,12 +30,8 @@ export default {
     ...mapState("cart", ["carts"]),
   },
   methods: {
-  
-    CartData() {
-      this.$store.dispatch("cart/CartData").then((res) => {
-        console.log(res);
-      });
-    },
+   ...mapActions("cart", ["CartData"]),
+    
     checkUserLogin() {
       // send request to check if the user is logged otherwise redirect him to login screen
       if (

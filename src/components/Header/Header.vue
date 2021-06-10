@@ -39,8 +39,10 @@ export default {
   },
   methods: {
     ...mapActions("layout", ["TOGGLE_DRAWER"]),
-    logOut: function () {
-      window.localStorage.setItem("authenticated", false);
+    logOut: function() {
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("is_authenticated");
+      localStorage.removeItem("user_data");
       this.$router.push("/login");
     },
   },

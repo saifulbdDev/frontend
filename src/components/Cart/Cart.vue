@@ -1,20 +1,23 @@
 /* eslint-disable vue/valid-v-bind */
 <template>
   <div>
-    <section class="stickyHeader" v-if="CART_STATE !== true" @click="TOGGLE_CART">
+    <section
+      class="stickyHeader"
+      v-if="CART_STATE !== true"
+      @click="TOGGLE_CART"
+    >
       <div class="itemCount">
         <v-icon large class="text-center" color="#fdd670">mdi-shopping</v-icon>
-        <p>
-          <span>{{items.length}} ITEMS</span>
+        <p class="">
+          <span>{{ items.length }} ITEMS</span>
         </p>
       </div>
-      <div class="total"></div>
+      <div class="total">{{ getCartTotal() }}</div>
     </section>
     <v-navigation-drawer
       v-else
       fixed
-      app
-      clipped
+      class="text-center"
       v-model="CART_STATE"
       :mini-variant="!CART_STATE"
       :width="sidebarWidth"
@@ -24,26 +27,36 @@
       :class="{ 'CART-mini': CART_STATE }"
       right
     >
-      <v-btn @click="TOGGLE_CART">dd {{(60 / 100) * windowHeight}}</v-btn>
+      <div class="header">
+        <div class="cart">
+          <v-icon large class="text-center" color="#fdd670"
+            >mdi-shopping</v-icon
+          >
+          <span class="ml-2">{{ items.length }} ITEMS</span>
+        </div>
 
+        <div>
+          <button class="closeCartButtonTop" @click="TOGGLE_CART">Close</button>
+        </div>
+      </div>
       <v-list
         class="cart-body"
         flat
         subheader
         three-line
-        v-bind:style="{ height:(70 / 100) * windowHeight + 'px' }"
+        v-bind:style="{ height: (70 / 100) * windowHeight + 'px' }"
       >
         <v-subheader></v-subheader>
 
         <!-- <v-list-item-group v-model="settings" active-class> -->
         <template v-for="item in items">
-          <v-list-item :key="'item_'+item.id">
+          <v-list-item :key="'item_' + item.id">
             <v-list-item-action>
-              <v-btn icon small>
-                <v-icon dark right>mdi-chevron-up</v-icon>
+              <v-btn icon small @click="incrementQuantity(item)">
+                <v-icon dark  >mdi-chevron-up</v-icon>
               </v-btn>
-              <v-btn icon small>
-                <v-icon dark right>mdi-chevron-down</v-icon>
+              <v-btn icon small @click="decrementQuantity(item)">
+                <v-icon dark >mdi-chevron-down</v-icon>
               </v-btn>
             </v-list-item-action>
 
@@ -51,10 +64,10 @@
               <img :src="img(item.product.gallery)" />
             </div>
             <div class="item-title">
-              <span>{{item.product.title}}</span>
+              <span>{{ item.product.title }}</span>
               <div class="subText">
                 <span>৳</span>
-                <span>200</span>
+                <span>{{ item.product.price }}</span>
                 <span>/ 80 pcs</span>
               </div>
               <!-- <span>৳ {{item.total_price_numeric}}</span> -->
@@ -62,14 +75,18 @@
             <div class="amount">
               <section>
                 <div class="discountAmount">
-                  <span>462</span>
+                  <span>{{ item.total_price_numeric }}</span>
                 </div>
                 <div class="total isStrikeThrough">
                   <span>৳</span>
-                  <span>675</span>
+                  <span>{{ item.product.price_after_discount }}</span>
                 </div>
               </section>
-              <div class="remove" title="Remove from bag" @click="removeCart(item.id)">
+              <div
+                class="remove"
+                title="Remove from bag"
+                @click="removeCart(item.id)"
+              >
                 <v-icon small>mdi-close</v-icon>
               </div>
             </div>
@@ -83,13 +100,13 @@
           <span class="placeOrderText">Place Order</span>
           <span class="totalMoneyCount">
             <span>৳</span>
-            <span>4,853</span>
+            <span>{{ getCartTotal() }}</span>
             <span></span>
           </span>
         </button>
       </div>
-      <v-btn color="#ff8641" class="text--white" block>
-        <v-icon>mdi-whatsapp</v-icon>Live Chat
+      <v-btn color="#ff8641" class="live-chat mx-auto">
+        <v-icon class="mr-2">mdi-whatsapp</v-icon>Live Chat
       </v-btn>
     </v-navigation-drawer>
   </div>
@@ -145,6 +162,41 @@ export default {
     },
     onResize() {
       this.windowHeight = window.innerHeight;
+    },
+    getCartTotal() {
+      let total = 0;
+      this.items.map((item) => {
+        total += item.total_price_numeric;
+      });
+
+      return total.toFixed(1);
+    },
+     incrementQuantity(item) {
+    
+     
+
+      if (item.product.amount >= item.amount_temp) {
+        let data = {
+          product_id: item.product_id,
+          amount: item.amount_temp + 1,
+        };
+
+        this.$store.dispatch("cart/Update", data).then(this.CartData());
+      } else {
+        return;
+      }
+    },
+     decrementQuantity(item) {
+     
+      if (item.amount_temp <= 1) {
+        return;
+      }
+      let data = {
+        product_id: item.product_id,
+        amount: item.amount_temp - 1,
+      };
+
+      this.$store.dispatch("cart/Update", data).then(this.CartData());
     },
     removeCart(id) {
       if (confirm("Are you sure?")) {
@@ -281,5 +333,50 @@ div.amount section {
 }
 .v-icon:hover {
   color: #e04f54 !important;
+}
+.live-chat {
+  color: #fff;
+  width: 70%;
+  margin: 0 auto;
+}
+.header {
+  width: 100%;
+  font-size: 15px;
+  color: #fff;
+  cursor: pointer;
+  background-color: #e4e0e1;
+  height: 39px;
+  box-sizing: border-box;
+  display: flex;
+  padding: 0 0 0 20px;
+  align-items: center;
+  justify-content: space-between;
+}
+.closeCartButtonTop {
+  display: block;
+  float: right;
+  background: 0 0;
+  border: 1px solid #62615f;
+  padding: 3px 15px 5px;
+  margin-right: 20px;
+
+  color: #4f4f4f;
+}
+.cart {
+  display: flex;
+  align-items: center;
+}
+.subText {
+  color: #9a9999;
+  font-size: 10px;
+  font-weight: 700;
+}
+.total {
+  height: 20px;
+  width: 100%;
+  font-weight: 700;
+  text-align: center;
+  font-size: 13px;
+  padding-top: 5px;
 }
 </style>

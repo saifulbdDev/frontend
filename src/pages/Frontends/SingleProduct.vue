@@ -1,8 +1,13 @@
 <template>
   <v-container class>
-    <v-row>
-      <v-col md="3" lg="2" v-for="item in product_by_category" :key="item.id">
-        <v-card class flat @mouseover="overly(item.id)" @mouseleave="overlyout(item.id)">
+    <v-row v-if="product_by_category.length">
+      <v-col md="3" v-for="item in product_by_category" :key="item.id">
+        <v-card
+          class
+          flat
+          @mouseover="overly(item.id)"
+          @mouseleave="overlyout(item.id)"
+        >
           <div class="imageWrapperWrapper">
             <img :src="img(item.gallery)" />
           </div>
@@ -13,28 +18,48 @@
           </div>
 
           <div class="overly" v-if="overly_id === item.id">
-            <div class="quantity-div">
-              <p class="remove">-</p>
+            <div class="quantity-div" v-if="ChackCart(item.id)">
+              <p class="remove" @click="decrementQuantity(item)">-</p>
               <p class="quantity">
-                <span>1</span>
+                <span>{{ Quantity(item) }}</span>
               </p>
-              <p class="add">+</p>
+              <p class="add" @click="incrementQuantity(item)">+</p>
             </div>
+            <p class="addText" v-else>
+              Add to Shopping Bag
+            </p>
           </div>
         </v-card>
 
-        <v-btn @click="AddCart(item)" block>Add bag</v-btn>
-        <div class="product-qn">
-          <button class="minusQuantity">–</button>
+        <v-btn
+          v-if="!ChackCart(item.id)"
+          class="add_to-cart"
+          @click="AddCart(item)"
+          block
+          >Add bag</v-btn
+        >
+
+        <div class="product-qn" v-else-if="ChackCart(item.id)">
+          <button class="minusQuantity" @click="decrementQuantity(item)">
+            –
+          </button>
           <div class="QuantityTextContainer">
-            <span>12</span>
-            <span></span>
-            <span>in bag</span>
+            <span>{{ Quantity(item) }}</span>
+
+            <span class="ml-2">in bag</span>
           </div>
-          <button class="plusQuantity">+</button>
+          <button class="plusQuantity" @click="incrementQuantity(item)">
+            +
+          </button>
         </div>
       </v-col>
     </v-row>
+    <v-col v-else class="category-title" md="6">
+      <h2>
+        {{ title($route.params.title) }}
+      </h2>
+      <span>this Category Product Not available</span>
+    </v-col>
   </v-container>
 </template>
 <script>
@@ -45,26 +70,31 @@ export default {
     return {
       overly_id: "",
       message: {},
+      tamp: {},
+      tamp_decrement: {},
     };
   },
   computed: {
     ...mapState("product", ["product_by_category"]),
+    ...mapState("cart", ["carts"]),
   },
 
   created() {
     this.CategoryByProduct();
+    this.CartData();
   },
 
   methods: {
-    ...mapActions("cart", ["TOGGLE_CART"]),
     ...mapActions("cart", ["CartData"]),
     CategoryByProduct() {
       this.$store
         .dispatch("product/DataSearch", this.$route.params.id)
-        .then((res) => {
-          console.log(res);
-        })
+        .then(() => {})
         .catch(() => {});
+    },
+    title(title) {
+      var tamptitle = title.split("-");
+      return tamptitle[0] + " " + tamptitle[1];
     },
     AddCart(item) {
       let data = {
@@ -78,6 +108,55 @@ export default {
         })
         .catch(() => {});
     },
+    incrementQuantity(item) {
+      this.carts.forEach((element) => {
+        if (element.product_id == item.id) {
+          this.tamp = element;
+        }
+      });
+
+      if (this.tamp.product.amount >= this.tamp.amount_temp) {
+        let data = {
+          product_id: this.tamp.product_id,
+          amount: this.tamp.amount_temp + 1,
+        };
+
+        this.$store.dispatch("cart/Update", data).then(this.CartData());
+      } else {
+        return;
+      }
+    },
+    Quantity(item) {
+      var quantity = "";
+      this.carts.map((element) => {
+        if (element.product_id === item.id) {
+          quantity = element.amount;
+        }
+      });
+      return quantity;
+    },
+    decrementQuantity(item) {
+      this.carts.forEach((element) => {
+        if (element.product_id == item.id) {
+          this.tamp_decrement = element;
+        }
+      });
+      if (this.tamp_decrement.amount_temp <= 1) {
+        return;
+      }
+      let data = {
+        product_id: this.tamp_decrement.product_id,
+        amount: this.tamp_decrement.amount_temp - 1,
+      };
+
+      this.$store.dispatch("cart/Update", data).then(this.CartData());
+    },
+    ChackCart(productId) {
+      return (
+        this.carts.find((item) => item.product_id == productId) != undefined
+      );
+    },
+
     img(gallery) {
       return gallery[0].image_url?.cart_thumb;
     },
@@ -108,6 +187,9 @@ export default {
   float: left;
   border-right: 1px solid #d55f5f !important;
   border-radius: 3px 0 0 3px !important;
+}
+.add_to-cart {
+  margin-top: 10px;
 }
 .product-qn {
   background: #ff8182;
@@ -160,6 +242,7 @@ export default {
 }
 .imageWrapperWrapper {
   width: 200px;
+  max-width: 100%;
   margin: 0 auto;
   height: 200px;
 }
@@ -225,5 +308,24 @@ export default {
 .remove:hover {
   color: #fdd670;
   border-color: #fdd670;
+}
+
+p.addText {
+  height: 100px;
+  width: 125px;
+  margin: 30px auto 0;
+  color: #fff;
+  font-size: 22px;
+  line-height: 34px;
+  z-index: 2000;
+}
+.category-title {
+  margin: 0 auto;
+}
+.category-title h2 {
+  font-size: 20px;
+}
+.category-title span {
+  font-size: 12px;
 }
 </style>

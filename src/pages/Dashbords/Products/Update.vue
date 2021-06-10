@@ -1,7 +1,7 @@
 <template>
   <v-form ref="form" v-model="valid" lazy-validation class="mt-5">
-    <h4>Add New Product</h4>
-    <v-row>
+    <h4>Add New Product </h4>
+    <!-- <v-row>
       <v-col md="6" cols="12">
         <v-card class="pa-2">
           <v-text-field
@@ -160,7 +160,7 @@
           </v-row>
         </v-card>
       </v-col>
-    </v-row>
+    </v-row> -->
 
     <v-btn
       color="primary"

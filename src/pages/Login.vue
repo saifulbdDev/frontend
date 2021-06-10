@@ -3,7 +3,12 @@
     <v-card class="mx-auto login pa-3">
       <v-card-title>Login Panel</v-card-title>
       <v-form ref="form" v-model="valid" lazy-validation>
-        <v-text-field v-model="email" :rules="emailRules" label="E-mail" required></v-text-field>
+        <v-text-field
+          v-model="email"
+          :rules="emailRules"
+          label="E-mail"
+          required
+        ></v-text-field>
         <v-text-field
           v-model="password"
           :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
@@ -14,7 +19,9 @@
           @click:append="show1 = !show1"
         ></v-text-field>
 
-        <v-btn :disabled="!valid" color="success" class="mr-4" @click="login">login</v-btn>
+        <v-btn :disabled="!valid" color="success" class="mr-4" @click="login"
+          >login</v-btn
+        >
       </v-form>
     </v-card>
   </v-app>
@@ -54,8 +61,11 @@ export default {
         .then((response) => {
           this.saveIntoStorage(response.data);
           this.$refs.form.validate();
-
-          this.$router.push("/dashboard");
+          if (response.data.user.id === 1) {
+            this.$router.push("/dashboard");
+          } else {
+            this.$router.push("/");
+          }
         })
         .catch((error) => {
           this.error_message = error.response.data.message;
