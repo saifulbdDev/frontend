@@ -13,8 +13,11 @@
           </div>
           <div class="product-details">
             <h5 class="item-title">{{ item.title }}</h5>
-            <div class="subText">{{ item.amount }} pcs</div>
-            <v-card-title class="item-price">{{ item.price }}</v-card-title>
+            <div class="subText">80 pcs</div>
+            <div class="discountedPriceSection">
+              <div class="discountedPrice">৳  {{ item.price_after_discount }}</div>
+              <div class="price">৳  {{ item.price }}</div>
+            </div>
           </div>
 
           <div class="overly" v-if="overly_id === item.id">
@@ -34,9 +37,10 @@
         <v-btn
           v-if="!ChackCart(item.id)"
           class="add_to-cart"
+          color="white"
           @click="AddCart(item)"
           block
-          >Add bag</v-btn
+          ><v-icon class="mr-2">mdi-cart-plus</v-icon> Add bag</v-btn
         >
 
         <div class="product-qn" v-else-if="ChackCart(item.id)">
@@ -326,6 +330,42 @@ p.addText {
   font-size: 20px;
 }
 .category-title span {
+  font-size: 12px;
+}
+div.discountedPrice {
+  color: #e43215;
+  font-weight: 700;
+  font-size: 18px;
+}
+div.discountedPriceSection {
+  overflow: auto;
+  padding-top: 5px;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-justify-content: center;
+}
+.add_to-cart {
+  text-transform: capitalize !important;
+  color: #fe8280 !important;
+  height: 37px !important;
+  cursor: pointer;
+  background-color: #fff;
+  border: 1px solid #ebebeb;
+  padding: 6px 0;
+  text-align: center;
+  transition: all ease-in-out 0.15s;
+}
+div.price {
+  margin-left: 5px;
+  margin-top: 4px;
+  text-decoration: line-through;
+  padding-top: 0;
   font-size: 12px;
 }
 </style>
