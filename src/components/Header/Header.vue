@@ -8,13 +8,12 @@
         <v-icon style="font-size: 28px">mdi-menu</v-icon>
       </template>
     </v-btn>
-    <v-toolbar-title>Tasks</v-toolbar-title>
+    <v-btn to="/" text>Tasks</v-btn>
     <v-spacer></v-spacer>
 
     <Search />
 
-     <v-btn to="/login">Login</v-btn>
-  
+    <v-btn to="/login">Login</v-btn>
   </v-app-bar>
 </template>
 
@@ -29,7 +28,6 @@ export default {
   data: () => ({
     config,
     searchCollapse: true,
-
   }),
   computed: {
     ...mapState("layout", ["drawer"]),

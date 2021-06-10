@@ -2,11 +2,14 @@ import axios from "axios";
 import Config from "@/config.json";
 let state = {
   products: [],
-  product: [],
+  product_by_category: [],
 };
 let mutations = {
   PRODUCT_DATA(state, products) {
     state.products = products;
+  },
+  DATA_SEARCH(state, products) {
+    state.product_by_category = products;
   },
   // eslint-disable-next-line no-unused-vars
   SHOW(state, product) {
@@ -45,6 +48,24 @@ let actions = {
         });
     });
   },
+
+  DataSearch({ commit }, search_params) {
+    return new Promise((resolve, reject) => {
+      axios
+        .get(
+          Config.BASE_URL +
+            "/api/product/search-products?page=1&category_id=" +
+            (search_params ? search_params : "")
+        )
+        .then((result) => {
+          resolve(result);
+          commit("DATA_SEARCH", result.data.products.data);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  },
   Show({ commit }, id) {
     return new Promise((resolve, reject) => {
       console.log(id);
@@ -61,7 +82,6 @@ let actions = {
   },
   Delete({ commit }, id) {
     return new Promise((resolve, reject) => {
-      console.log(id);
       axios
         .delete(Config.BASE_URL + "/api/product/" + id)
         .then((result) => {

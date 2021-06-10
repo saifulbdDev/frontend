@@ -1,12 +1,13 @@
 @import "src/styles/variables";
-.text{
+.text {
   padding: 5px 0 5px 10px;
-    display: block;
-    text-decoration: none;
-    font-size: 13px;
-    color: #000;
-    letter-spacing: .1px;
+  display: block;
+  text-decoration: none;
+  font-size: 13px;
+  color: #000;
+  letter-spacing: 0.1px;
 }
+
 .v-navigation-drawer {
   top: 64px !important;
   height: calc(100vh - 64px) !important;
@@ -27,7 +28,6 @@
   .v-list-item:not(.v-list-item--active) {
     .v-icon {
       color: $text-grey;
-     
     }
   }
 
@@ -60,8 +60,8 @@
         min-height: auto;
         .v-list-item__content {
           padding-top: 5px;
-           padding:inherit !important;
-      }
+          padding: inherit !important;
+        }
       }
       a.v-list-item {
         margin-left: 10px;
@@ -84,11 +84,11 @@
 }
 .v-list-item__action,
 .v-list-item__icon {
-  margin:  8px;
+  margin: 8px;
   &:first-child {
     margin-right: 0px !important;
   }
-  img{
+  img {
     width: 20px;
     display: inline-block;
     vertical-align: text-bottom;
@@ -97,8 +97,9 @@
 .v-navigation-drawer--temporary.v-navigation-drawer--clipped {
   z-index: 5;
 }
-.v-list-group--active > .v-list-group__header > .v-list-group__header__append-icon .v-icon {
-  transform: rotate(
-90deg
-);
+.v-list-group--active
+  > .v-list-group__header
+  > .v-list-group__header__append-icon
+  .v-icon {
+  transform: rotate(90deg);
 }

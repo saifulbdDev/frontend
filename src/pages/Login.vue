@@ -1,29 +1,20 @@
 <template>
   <v-app class="pa-6">
     <v-card class="mx-auto login pa-3">
-      <v-card-title>Login Admin Panel</v-card-title>
+      <v-card-title>Login Panel</v-card-title>
       <v-form ref="form" v-model="valid" lazy-validation>
-        <v-text-field
-          v-model="email"
-          :rules="emailRules"
-          label="E-mail"
-          required
-        ></v-text-field>
+        <v-text-field v-model="email" :rules="emailRules" label="E-mail" required></v-text-field>
         <v-text-field
           v-model="password"
           :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-          :rules="[rules.required, rules.min]"
           :type="show1 ? 'text' : 'password'"
           name="input-10-1"
           label="password"
-          hint="At least 8 characters"
           counter
           @click:append="show1 = !show1"
         ></v-text-field>
 
-        <v-btn :disabled="!valid" color="success" class="mr-4" @click="login">
-          login
-        </v-btn>
+        <v-btn :disabled="!valid" color="success" class="mr-4" @click="login">login</v-btn>
       </v-form>
     </v-card>
   </v-app>
@@ -61,7 +52,6 @@ export default {
       this.axios
         .post(Config.BASE_URL + "/api/login", login_data)
         .then((response) => {
-           
           this.saveIntoStorage(response.data);
           this.$refs.form.validate();
 

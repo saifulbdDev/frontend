@@ -225,7 +225,7 @@ export default {
         .then(() => {
           this.loading = false;
 
-          this.$router.push("/dashboard/product");
+          this.$router.push("/dashboard/products");
         })
         .catch((err) => {
           this.errors = err.response.data.errors;

@@ -8,10 +8,8 @@
               <v-toolbar-title>Categories</v-toolbar-title>
               <v-divider class="mx-4" inset vertical></v-divider>
               <v-spacer>
-                 <v-col md="6" class="mx-auto"  v-if="message == 'Deleted successfully'">
-                  <v-alert type="success">
-                  {{message}}
-                  </v-alert>
+                <v-col md="6" class="mx-auto" v-if="message == 'Deleted successfully'">
+                  <v-alert type="success">{{message}}</v-alert>
                 </v-col>
               </v-spacer>
               <v-btn color="primary" dark class="mb-2" to="/dashboard/category-create">New Category</v-btn>
@@ -37,8 +35,8 @@
                   >
                     <v-icon small>mdi-pencil</v-icon>
                   </v-btn>
-                  <v-btn color="error" small class="mr-2">
-                    <v-icon small @click="removeCategory(item.id)">mdi-delete</v-icon>
+                  <v-btn color="error" small class="mr-2" @click="removeCategory(item.id)">
+                    <v-icon small>mdi-delete</v-icon>
                   </v-btn>
                 </td>
               </tr>
@@ -60,7 +58,7 @@ export default {
   name: "Tables",
   data() {
     return {
-        message:{},
+      message: {},
       headers: [
         {
           text: "Title",
@@ -75,16 +73,11 @@ export default {
 
         { text: "Actions", value: "actions", sortable: false },
       ],
-    
     };
   },
   computed: {
     ...mapState("category", ["categories"]),
-
-   
   },
-
-
 
   created() {
     this.Data();
@@ -92,15 +85,14 @@ export default {
 
   methods: {
     ...mapActions("category", ["Data"]),
-  
 
     removeCategory(id) {
       if (confirm("Are you sure?")) {
         this.$store
           .dispatch("category/Delete", id)
           .then((res) => {
-           this.message = res.data.message
-           this.Data();
+            this.message = res.data.message;
+            this.Data();
           })
           .catch(() => {});
       }

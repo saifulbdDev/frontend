@@ -5,7 +5,7 @@ import Layout from "@/components/Layout/Layout";
 import Login from "@/pages/Login";
 import Home from "@/pages/Frontends/Home";
 import DashboardLayout from "@/components/Dashboard/Layout/Layout";
-import SingleProduct from "@/pages/SingleProduct";
+import SingleProduct from "@/pages/Frontends/SingleProduct";
 import DashbdProduct from "@/pages/Dashbords/Products/Index.vue";
 import DashbdProductAdd from "@/pages/Dashbords/Products/Add.vue";
 import DashbdProductUpdate from "@/pages/Dashbords/Products/Update.vue";
@@ -21,7 +21,6 @@ Vue.use(Router);
 let router = new Router({
   mode: "history",
   routes: [
-   
     {
       path: "/login",
       name: "Login",
@@ -31,18 +30,18 @@ let router = new Router({
       path: "/",
       redirect: "home",
 
+      meta: { title: "Home Layout", requiresAuth: true },
       component: Layout,
       children: [
-         
         {
-          meta: { title: "Home" },
+          meta: { title: "Home", requiresAuth: true },
           path: "/home",
 
           component: Home,
         },
         {
-          meta: { title: "SingleProduct" },
-          path: "/product/:name",
+          meta: { title: "SingleProduct", requiresAuth: true },
+          path: "/product-category/:id/:title",
 
           component: SingleProduct,
         },

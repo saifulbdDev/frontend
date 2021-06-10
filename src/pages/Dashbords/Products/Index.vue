@@ -2,30 +2,17 @@
   <v-container fluid>
     <div class="tables-basic">
       <v-card class="mb-1 mt-3">
-        <v-data-table
-          :headers="headers"
-          :items="products"
-          sort-by="calories"
-          class="elevation-1"
-        >
+        <v-data-table :headers="headers" :items="products" sort-by="calories" class="elevation-1">
           <template v-slot:top>
             <v-toolbar flat>
               <v-toolbar-title>Products</v-toolbar-title>
-              <v-divider class="mx-4" inset vertical> </v-divider>
+              <v-divider class="mx-4" inset vertical></v-divider>
               <v-spacer>
-                <v-col md="6" class="mx-auto"  v-if="message == 'Deleted successfully'">
-                  <v-alert type="success">
-                  {{message}}
-                  </v-alert>
+                <v-col md="6" class="mx-auto" v-if="message == 'Deleted successfully'">
+                  <v-alert type="success">{{message}}</v-alert>
                 </v-col>
               </v-spacer>
-              <v-btn
-                color="primary"
-                dark
-                class="mb-2"
-                to="/dashboard/products-create"
-                >New Products</v-btn
-              >
+              <v-btn color="primary" dark class="mb-2" to="/dashboard/products-create">New Products</v-btn>
             </v-toolbar>
           </template>
           <template v-slot:body="{ items }">
@@ -42,7 +29,7 @@
                     :key="img.id"
                   />
                 </td>
-                <td>{{ item.price }}</td>
+                <td>{{ item.price }} ৳</td>
                 <td>{{ item.product_code }}</td>
                 <td>{{ item.brand.title }}</td>
                 <td>{{ item.category.title }}</td>
@@ -58,10 +45,8 @@
                   >
                     <v-icon small>mdi-pencil</v-icon>
                   </v-btn>
-                  <v-btn color="error" small class="mr-2">
-                    <v-icon small @click="removeProduct(item.id)"
-                      >mdi-delete</v-icon
-                    >
+                  <v-btn color="error" small class="mr-2" @click="removeProduct(item.id)">
+                    <v-icon small>mdi-delete</v-icon>
                   </v-btn>
                 </td>
               </tr>
@@ -83,7 +68,7 @@ export default {
   name: "Tables",
   data() {
     return {
-      message:{},
+      message: {},
       headers: [
         {
           text: "Title",
@@ -112,15 +97,14 @@ export default {
 
   methods: {
     ...mapActions("product", ["Data"]),
-    
 
     removeProduct(id) {
       if (confirm("Are you sure?")) {
         this.$store
           .dispatch("product/Delete", id)
           .then((res) => {
-           this.message = res.data.message
-             this.Data();
+            this.message = res.data.message;
+            this.Data();
           })
           .catch(() => {});
       }
